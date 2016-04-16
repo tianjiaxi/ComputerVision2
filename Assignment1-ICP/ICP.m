@@ -20,9 +20,16 @@ end
 
 
 [k, d] = dsearchn(A1,A2);
-A = [0,0,0,0];
+A = [0,0,0];
 for i = 1:length(k)
-    A = A + (A1(k(i),:))*(A2(i,:));
+    A = A + (A1(k(i),:)).*(A2(i,:));
 end
 
 [U, S, V] = svd(A);
+
+R = U*V';
+
+T = (centroidA1 - centroidA2)*R;
+
+
+TPC = R *A1(:,i) +T(:,1)
