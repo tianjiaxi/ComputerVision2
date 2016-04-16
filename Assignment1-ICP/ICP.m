@@ -1,20 +1,22 @@
 R = eye(3);
 t = 0;
 
-BPC = readPcd('data/0000000000.pcd');
-BPC(:,4) = [];
+BPCo = readPcd('data/0000000000.pcd');
+BPCo(:,4) = [];
 
-TPC = readPcd('data/0000000001.pcd');
-TPC(:,4) = [];
+TPCo = readPcd('data/0000000001.pcd');
+TPCo(:,4) = [];
 avgdistance = 1000;
-
+iterations =0;
 while avgdistance >= 0.0012
-    centroidBPC = sum(BPC)/ length(BPC);
-    centroidTPC = sum(TPC)/length(TPC);
+    
+    
+    centroidBPC = sum(BPCo)/ length(BPCo);
+    centroidTPC = sum(TPCo)/length(TPCo);
 
-    BPC = bsxfun(@minus, BPC, centroidBPC);
+    BPC = bsxfun(@minus, BPCo, centroidBPC);
 
-    TPC = bsxfun(@minus, TPC, centroidTPC);
+    TPC = bsxfun(@minus, TPCo, centroidTPC);
 
     [k, d] = dsearchn(BPC,TPC);
     A = [0,0,0];
@@ -29,11 +31,13 @@ while avgdistance >= 0.0012
     T = (centroidBPC - centroidTPC)*R;
 
 
-    TPC = bsxfun(@plus,TPC*R,T)
+    TPC = bsxfun(@plus,TPCo*R,T);
     distances = 0;
-    for i = 1:length(TPC(:,1))
-        distances = distances + BPC(i,:) - TPC(i,:);
+    for i = 1:length(TPCo(:,1))
+        distances = distances + BPCo(i,:) - TPC(i,:);
     end
 
-    avgdistance = distances / length(TPC)
+    avgdistance = distances / length(TPC);
+    iterations = iterations + 1
+    TPCo = TPC;
 end
