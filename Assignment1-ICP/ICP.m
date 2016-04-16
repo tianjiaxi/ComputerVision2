@@ -10,14 +10,9 @@ A2(:,4) = [];
 centroidA1 = sum(A1)/ length(A1);
 centroidA2 = sum(A2)/length(A2);
 
-for i = 1:length(A1)
-    A1(i,:) = A1(i,:) - centroidA1;
-end
+A1 = bsxfun(@minus, A1, centroidA1);
 
-for i = 1:length(A2)
-    A2(i,:) = A2(i,:) - centroidA2;
-end
-
+A2 = bsxfun(@minus, A2, centroidA1);
 
 [k, d] = dsearchn(A1,A2);
 A = [0,0,0];
@@ -32,4 +27,16 @@ R = U*V';
 T = (centroidA1 - centroidA2)*R;
 
 
-TPC = R *A1(:,i) +T(:,1)
+TPC = bsxfun(@plus,A1*R,T)
+
+
+
+for i = 1:length(A1(:,1))
+    distances = distances + A(i,:) -TPC(i,:);
+end
+
+avgdistances/ length(A1);
+
+if(avgdistances) < 0,0012
+   break 
+end
