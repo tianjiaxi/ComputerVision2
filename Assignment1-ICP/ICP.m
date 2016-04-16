@@ -1,42 +1,39 @@
 R = eye(3);
 t = 0;
 
-A1 = readPcd('data/0000000000.pcd');
-A1(:,4) = [];
+BPC = readPcd('data/0000000000.pcd');
+BPC(:,4) = [];
 
-A2 = readPcd('data/0000000001.pcd');
-A2(:,4) = [];
+TPC = readPcd('data/0000000001.pcd');
+TPC(:,4) = [];
+avgdistance = 1000;
 
-centroidA1 = sum(A1)/ length(A1);
-centroidA2 = sum(A2)/length(A2);
+while avgdistance >= 0.0012
+    centroidBPC = sum(BPC)/ length(BPC);
+    centroidTPC = sum(TPC)/length(TPC);
 
-A1 = bsxfun(@minus, A1, centroidA1);
+    BPC = bsxfun(@minus, BPC, centroidBPC);
 
-A2 = bsxfun(@minus, A2, centroidA1);
+    TPC = bsxfun(@minus, TPC, centroidTPC);
 
-[k, d] = dsearchn(A1,A2);
-A = [0,0,0];
-for i = 1:length(k)
-    A = A + (A1(k(i),:)).*(A2(i,:));
-end
+    [k, d] = dsearchn(BPC,TPC);
+    A = [0,0,0];
+    for i = 1:length(k)
+        A = A + (BPC(k(i),:)).*(TPC(i,:));
+    end
 
-[U, S, V] = svd(A);
+    [U, S, V] = svd(A);
 
-R = U*V';
+    R = U*V';
 
-T = (centroidA1 - centroidA2)*R;
-
-
-TPC = bsxfun(@plus,A1*R,T)
-
+    T = (centroidBPC - centroidTPC)*R;
 
 
-for i = 1:length(A1(:,1))
-    distances = distances + A(i,:) -TPC(i,:);
-end
+    TPC = bsxfun(@plus,TPC*R,T)
+    distances = 0;
+    for i = 1:length(TPC(:,1))
+        distances = distances + BPC(i,:) - TPC(i,:);
+    end
 
-avgdistances/ length(A1);
-
-if(avgdistances) < 0,0012
-   break 
+    avgdistance = distances / length(TPC)
 end
