@@ -17,6 +17,8 @@ matchIndex = matchIndex(2:end, :);
 distance = mean(matchIndex(:,3));
 BPCm = BPC(matchIndex(:,2),:);
 TPCm = TPC(matchIndex(:,1),:);
+lenbpcm = length(BPCm);
+lentpcm = length(TPCm);
 
 end
 

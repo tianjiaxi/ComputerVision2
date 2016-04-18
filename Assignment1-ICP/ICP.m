@@ -11,18 +11,18 @@ BPCo(:,4) = [];
 
 BPCo = cleanData(BPCo);
 
-BPCo = BPCo(1:100:length(BPCo),:)
+BPCo = BPCo(1:50:length(BPCo),:);
 
 
 TPCo = readPcd(file2);
 TPCo(:,4) = [];
 
 TPCo = cleanData(TPCo);
-TPCo = TPCo(1:100:length(TPCo),:)
+TPCo = TPCo(1:50:length(TPCo),:);
 
 
-scatter3(TPCo(:,1),TPCo(:,2),TPCo(:,3), 'filled', 'red');
-hold on
+%scatter3(TPCo(:,1),TPCo(:,2),TPCo(:,3), 'filled', 'red');
+%hold on
 avgdistance = 1000;
 iterations =0;
     while 1 == 1
@@ -30,11 +30,11 @@ iterations =0;
         
         [BPCm, TPCm, distance] = findMatches(BPCo, TPCo);
         
-        if distance < 0.0012
+        if distance < 0.0012 || iterations > 5
             distance
             break
         else
-            distance
+            distance;
         end
         
         centroidTPCm = mean(TPCm);
@@ -54,7 +54,7 @@ iterations =0;
 
         R = U*V';
 
-        T = (centroidBPCm - centroidTPCm)*R;
+        T = (centroidBPCm - centroidTPCm)*R
 
 
         TPC = bsxfun(@plus,TPCo*R,T);
@@ -63,7 +63,8 @@ iterations =0;
         TPCo = TPC;
         
     end
-
-    scatter3(TPC(:,1),TPC(:,2),TPC(:,3), 'filled', 'yellow');
-    scatter3(BPC(:,1),BPC(:,2),BPC(:,3), 'filled', 'blue');
+    iterations
+    scatter3(TPCo(:,1),TPCo(:,2),TPCo(:,3), 'filled', 'yellow');
+    hold on
+    %scatter3(BPCo(:,1),BPCo(:,2),BPCo(:,3), 'filled', 'blue');
 end
