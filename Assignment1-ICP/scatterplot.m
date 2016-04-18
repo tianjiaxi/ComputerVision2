@@ -1,6 +1,6 @@
 cloud = readPcd('data/0000000000.pcd');
 cloud2 = zeros(1,4);
-
+length(cloud)
 counter = 1;
 for i = 1:length(cloud)
    if cloud(i,3) < 2 && cloud(i,3) > 0.5
@@ -8,3 +8,4 @@ for i = 1:length(cloud)
        counter = counter + 1;
    end
 end
+length(cloud2) - length(cloud)

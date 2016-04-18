@@ -1,51 +1,73 @@
-function ICP(filename1, filename2, folder)
+function R = ICP(filename1, filename2, folder)
 
 R = eye(3);
 t = 0;
-dir = folder;
 
-file1 = strcat(dir, '/',filename1);
-file2 = strcat(dir, '/',filename2);
+file1 = strcat(folder, '\', filename1);
+file2 = strcat(folder, '\',filename2);
 
 BPCo = readPcd(file1);
 BPCo(:,4) = [];
 
+BPCo = cleanData(BPCo);
+
+BPCo = BPCo(1:100:length(BPCo),:)
+
+
 TPCo = readPcd(file2);
 TPCo(:,4) = [];
+
+TPCo = cleanData(TPCo);
+<<<<<<< 06d714cef5f9342ee3e4567a3fafc294c62eea6e
+TPCo = TPCo(1:100:length(TPCo), :);
+=======
+TPCo = TPCo(1:100:length(TPCo),:)
+>>>>>>> push enzo
+
+
+scatter3(TPCo(:,1),TPCo(:,2),TPCo(:,3), 'filled', 'red');
+hold on
 avgdistance = 1000;
 iterations =0;
-    while avgdistance >= 0.0012
+    while 1 == 1
 
+        
+        [BPCm, TPCm, distance] = findMatches(BPCo, TPCo);
+        
+        if distance < 0.0012
+            distance
+            break
+        else
+            distance
+        end
+        
+        centroidTPCm = mean(TPCm);
+        centroidBPCm = mean(BPCm);
+        
+        BPCm = bsxfun(@minus, BPCm, centroidBPCm);
+        TPCm = bsxfun(@minus, TPCm, centroidTPCm);
+        
 
-        centroidBPC = sum(BPCo)/ length(BPCo);
-        centroidTPC = sum(TPCo)/length(TPCo);
-
-        BPC = bsxfun(@minus, BPCo, centroidBPC);
-
-        TPC = bsxfun(@minus, TPCo, centroidTPC);
-
-        [k, d] = dsearchn(BPC,TPC);
+        
         A = [0,0,0];
-        for i = 1:length(k)
-            A = A + (BPC(k(i),:)).*(TPC(i,:));
+        for i = 1:length(BPCm)
+            A = A + (BPCm(i,:)).*(TPCm(i,:));
         end
 
         [U, S, V] = svd(A);
 
         R = U*V';
 
-        T = (centroidBPC - centroidTPC)*R;
+        T = (centroidBPCm - centroidTPCm)*R;
 
 
         TPC = bsxfun(@plus,TPCo*R,T);
-        distances = 0;
-        for i = 1:length(TPCo(:,1))
-            distances = distances + BPCo(i,:) - TPC(i,:);
-        end
-
-        avgdistance = distances / length(TPC);
+        
         iterations = iterations + 1
         TPCo = TPC;
+        
     end
 
+    scatter3(TPC(:,1),TPC(:,2),TPC(:,3), 'filled', 'yellow');
+    scatter3(BPC(:,1),BPC(:,2),BPC(:,3), 'filled', 'blue');
 end

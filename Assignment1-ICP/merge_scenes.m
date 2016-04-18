@@ -1,5 +1,6 @@
 function merge_scenes()
 close all
+tic()
 folder = 'data';
 directory = strcat(pwd, '\',folder,'\');
 contents = dir(directory);
@@ -15,4 +16,5 @@ contents = dir(directory);
             
         end
     end
+    toc()
 end
