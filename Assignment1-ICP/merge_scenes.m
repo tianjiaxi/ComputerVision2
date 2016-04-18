@@ -12,7 +12,7 @@ contents = dir(directory);
         
         if strcmp(ext, '.pcd') && length(name) == 10
             R = ICP(filename, filename2, folder)
-            break
+            
         end
     end
 end

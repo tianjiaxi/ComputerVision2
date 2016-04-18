@@ -10,11 +10,13 @@ BPCo = readPcd(file1);
 BPCo(:,4) = [];
 
 BPCo = cleanData(BPCo);
+BPCo = BPCo(1:100:length(BPCo), :);
 
 TPCo = readPcd(file2);
 TPCo(:,4) = [];
 
 TPCo = cleanData(TPCo);
+TPCo = TPCo(1:100:length(TPCo), :);
 
 avgdistance = 1000;
 iterations =0;
@@ -50,7 +52,8 @@ iterations =0;
         avgdistance = distances / length(TPC);
         iterations = iterations + 1
         TPCo = TPC;
-        scatter3(TPC(:,1),TPC(:,2),TPC(:,3));
+        
     end
-
+    scatter3(TPC(:,1),TPC(:,2),TPC(:,3));
+    hold;
 end
