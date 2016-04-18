@@ -9,8 +9,13 @@ file2 = strcat(folder, '\',filename2);
 BPCo = readPcd(file1);
 BPCo(:,4) = [];
 
+BPCo = cleanData(BPCo);
+
 TPCo = readPcd(file2);
 TPCo(:,4) = [];
+
+TPCo = cleanData(TPCo);
+
 avgdistance = 1000;
 iterations =0;
     while avgdistance >= 0.0012
@@ -44,7 +49,7 @@ iterations =0;
 
         avgdistance = distances / length(TPC);
         iterations = iterations + 1
-        TPCo = TPC
+        TPCo = TPC;
         scatter3(TPC(:,1),TPC(:,2),TPC(:,3));
     end
 

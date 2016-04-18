@@ -1,10 +1,8 @@
-function cloud2 = cleanData(data)
-    cloud = readPcd(data);
-    cloud2 = zeros(1,4);
-
+function cloud2 = cleanData(cloud)
+    cloud2 = zeros(1, 3);
     counter = 1;
     for i = 1:length(cloud)
-       if cloud(i,3) < 2 && cloud(i,3) > 0.5
+       if cloud(i,3) < 2
            cloud2(counter,:) = cloud(i,:);
            counter = counter + 1;
        end
