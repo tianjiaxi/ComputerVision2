@@ -1,0 +1,13 @@
+cloud = readPcd('data/0000000050.pcd');
+cloud2 = zeros(size(cloud));
+max(cloud)
+
+counter = 1;
+for i = 1:length(cloud)
+   if cloud(i,3) < 5
+       cloud2(counter,:) = cloud(i,:);
+       counter = counter + 1;
+   end
+end
+
+scatter3(cloud2(:,1),cloud2(:,2), cloud2(:,3))

@@ -1,43 +1,51 @@
+function R = ICP(filename1, filename2, folder)
+
 R = eye(3);
 t = 0;
 
-BPCo = readPcd('data/0000000000.pcd');
+file1 = strcat(folder, '\', filename1);
+file2 = strcat(folder, '\',filename2);
+
+BPCo = readPcd(file1);
 BPCo(:,4) = [];
 
-TPCo = readPcd('data/0000000001.pcd');
+TPCo = readPcd(file2);
 TPCo(:,4) = [];
 avgdistance = 1000;
 iterations =0;
-while avgdistance >= 0.0012
-    
-    
-    centroidBPC = sum(BPCo)/ length(BPCo);
-    centroidTPC = sum(TPCo)/length(TPCo);
+    while avgdistance >= 0.0012
 
-    BPC = bsxfun(@minus, BPCo, centroidBPC);
 
-    TPC = bsxfun(@minus, TPCo, centroidTPC);
+        centroidBPC = sum(BPCo)/ length(BPCo);
+        centroidTPC = sum(TPCo)/length(TPCo);
 
-    [k, d] = dsearchn(BPC,TPC);
-    A = [0,0,0];
-    for i = 1:length(k)
-        A = A + (BPC(k(i),:)).*(TPC(i,:));
+        BPC = bsxfun(@minus, BPCo, centroidBPC);
+
+        TPC = bsxfun(@minus, TPCo, centroidTPC);
+
+        [k, d] = dsearchn(BPC,TPC);
+        A = [0,0,0];
+        for i = 1:length(k)
+            A = A + (BPC(k(i),:)).*(TPC(i,:));
+        end
+
+        [U, S, V] = svd(A);
+
+        R = U*V';
+
+        T = (centroidBPC - centroidTPC)*R;
+
+
+        TPC = bsxfun(@plus,TPCo*R,T);
+        distances = 0;
+        for i = 1:length(TPCo(:,1))
+            distances = distances + BPCo(i,:) - TPC(i,:);
+        end
+
+        avgdistance = distances / length(TPC);
+        iterations = iterations + 1
+        TPCo = TPC
+        scatter3(TPC(:,1),TPC(:,2),TPC(:,3));
     end
 
-    [U, S, V] = svd(A);
-
-    R = U*V';
-
-    T = (centroidBPC - centroidTPC)*R;
-
-
-    TPC = bsxfun(@plus,TPCo*R,T);
-    distances = 0;
-    for i = 1:length(TPCo(:,1))
-        distances = distances + BPCo(i,:) - TPC(i,:);
-    end
-
-    avgdistance = distances / length(TPC);
-    iterations = iterations + 1
-    TPCo = TPC;
 end
