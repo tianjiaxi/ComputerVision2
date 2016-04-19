@@ -5,6 +5,7 @@ folder = 'data';
 directory = strcat(pwd, '\',folder,'\');
 contents = dir(directory);
 counter = 1
+BPC = [];
     for i = 1:numel(contents)-7
         filename = contents(i).name;
         filename2 = contents(i+7).name;
@@ -21,21 +22,27 @@ counter = 1
 
             BPCo = cleanData(BPCo);
 
-            BPCo = BPCo(1:50:length(BPCo),:);
+            BPCo = BPCo(1:4:length(BPCo),:);
 
 
             TPCo = readPcd(file2);
             TPCo(:,4) = [];
 
             TPCo = cleanData(TPCo);
-            TPCo = TPCo(1:50:length(TPCo),:);
-
-
-            R = ICP(BPCo, TPCo)
+            TPCo = TPCo(1:4:length(TPCo),:);
+            
+            if isempty(BPC)
+                'first'
+                BPC = BPCo;
+            else
+                'take previous target cloud'
+            end
+            
+            BPC = ICP(BPC, TPCo);
             counter = counter + 1
         end
         
-        if counter > 2
+        if counter > 10
             break
         end
     end
