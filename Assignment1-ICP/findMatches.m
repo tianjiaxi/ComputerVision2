@@ -1,4 +1,5 @@
 function [BPCm, TPCm, distance] = findMatches(BPC, TPC)
+'doing find matches'
 [b, d] = dsearchn(BPC,TPC);
 t = 1:length(b);
 t = t';
