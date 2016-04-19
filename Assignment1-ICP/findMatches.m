@@ -1,4 +1,5 @@
 function [BPCm, TPCm, distance] = findMatches(BPC, TPC)
+%This function is used to find and return the matched points.
 'doing find matches'
 [b, d] = dsearchn(BPC,TPC);
 t = 1:length(b);

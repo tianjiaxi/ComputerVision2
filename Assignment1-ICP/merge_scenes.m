@@ -1,4 +1,7 @@
 function merge_scenes()
+%This function will attempt to merge the point clouds in an iterative way
+%but its builds on the translated previous point cloud only. Not on all the
+%previos point cloud. This is assignment 2.2.
 close all
 tic()
 folder = 'data';
@@ -22,14 +25,14 @@ BPC = [];
 
             BPCo = cleanData(BPCo);
 
-            BPCo = BPCo(1:4:length(BPCo),:);
+            BPCo = BPCo(1:50:length(BPCo),:);
 
 
             TPCo = readPcd(file2);
             TPCo(:,4) = [];
 
             TPCo = cleanData(TPCo);
-            TPCo = TPCo(1:4:length(TPCo),:);
+            TPCo = TPCo(1:50:length(TPCo),:);
             
             if isempty(BPC)
                 'first'
@@ -42,7 +45,7 @@ BPC = [];
             counter = counter + 1
         end
         
-        if counter > 10
+        if counter > 50
             break
         end
     end

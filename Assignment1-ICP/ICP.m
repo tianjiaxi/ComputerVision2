@@ -1,5 +1,5 @@
 function [TPC] = ICP(BPCo, TPCo)
-
+%this function is used by merge_scenes.m to perform the ICP algorithm.
 R = eye(3);
 t = 0;
 
@@ -49,8 +49,8 @@ iterations =0;
         TPCo = TPC;
         
     end
-
-    scatter3(TPCo(1:5:end,1),TPCo(1:5:end,2),TPCo(1:5:end,3), '.', 'yellow' );
+    h = scatter3(TPCo(1:10:end,1),TPCo(1:10:end,2),TPCo(1:10:end,3), '.');
+    h.MarkerFaceColor = [randi(1)/100 randi(1)/100 randi(1)/100];
     hold on
     %scatter3(BPCo(1:5:end,1),BPCo(1:5:end,2),BPCo(1:5:end,3), '.', 'blue');
 end
