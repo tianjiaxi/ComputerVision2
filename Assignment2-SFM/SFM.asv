@@ -23,9 +23,7 @@ function SFM
     
     [n,m] = size(V);
     
-    [M,I] = min(max(S));
+    [M,I] = min(max(S))
     
-    F = reshape(V(:,I),[3,3])
-    
-    
+    S
 end
