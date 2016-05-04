@@ -48,27 +48,35 @@ function SFM(mode)
     x2 = xy2(:,1);
     y2 = xy2(:,2);
     
-    A = [x1.*x2, x1.*y2, x1, y1.*x2, y1.*y2, y1, x2, y2, ones(size(x1))];
-    
-    [U,D,V] = svd(A); %performing SVD on A
-    
-    [M,I] = min(max(D)); %finding the smallest singular value
-    
-    F = reshape(V(:,I),[3,3]);
-    
-    [Uf, Df, Vf] = svd(F); %performing SVD on F
-    
-    [M,I] = min(max(Df)); %finding the smallest singular value
-    
-    Dfp = Df;
-    Dfp(I,I) = 0; %ensuring the rank is 2    
-    
-    F = Uf*Dfp*Vf';
-    
+%     A = [x1.*x2, x1.*y2, x1, y1.*x2, y1.*y2, y1, x2, y2, ones(size(x1))];
+%     
+%     [U,D,V] = svd(A); %performing SVD on A
+%     
+%     [M,I] = min(max(D)); %finding the smallest singular value
+%     
+%     F = reshape(V(:,I),[3,3]);
+%     
+%     [Uf, Df, Vf] = svd(F); %performing SVD on F
+%     
+%     [M,I] = min(max(Df)); %finding the smallest singular value
+%     
+%     Dfp = Df;
+%     Dfp(I,I) = 0; %ensuring the rank is 2    
+%     
+%     F = Uf*Dfp*Vf';
+    if mode == 1 || mode == 2
+        F = FundamentalMatrix(x1,y1,x2,y2);
+    end
+    if mode == 3
+        F = RANSAC(x1, y1, x2, y2);
+    end
     if mode == 2
-       F = T2' * F * T1; 
+        F = denormalizeF(F, T1, T2); 
     end
     F
+    
+    
+    PlotImages(matches, im1, im2, f1, f2, [])
     
     
    
