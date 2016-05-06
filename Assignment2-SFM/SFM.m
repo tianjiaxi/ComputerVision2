@@ -12,7 +12,7 @@ function SFM(mode)
     xy1 = f1(1:2, matches(1, :))';
     xy2 = f2(1:2, matches(2, :))';
 
-    if mode == 2
+    if mode == 2 || mode == 3
         fprintf('normalizing the data')
         x1 = xy1(:, 1);
         y1 = xy1(:, 2);
@@ -68,24 +68,16 @@ function SFM(mode)
         F = FundamentalMatrix(x1,y1,x2,y2);
     end
     if mode == 3
-        F = RANSAC(x1, y1, x2, y2);
+        [F, inliers] = RANSAC(x1, y1, x2, y2);
     end
-    if mode == 2
+    if mode == 2 || mode == 3
         F = denormalizeF(F, T1, T2); 
     end
     F
     
     
-    %PlotImages(matches, im1, im2, f1, f2, [])
+    PlotImages(matches, im1, im2, f1, f2, inliers)
     
-    
-   
-     
-     
-     
-     
-     
-     
-     
+
      
 end
