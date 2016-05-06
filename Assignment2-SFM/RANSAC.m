@@ -1,12 +1,13 @@
-function [F, bestInliers] = RANSAC( x1, y1, x2, y2 )
-    totalPoints = 20
+function [bestF, bestInliers] = RANSAC( x1, y1, x2, y2 )
+    totalPoints = 8;
     RandX1 = zeros(totalPoints,1);
     RandY1 = zeros(totalPoints,1);
     RandX2 = zeros(totalPoints,1);
     RandY2 = zeros(totalPoints,1);
     
-    bestInlierCount = 0;
     bestInliers = [];
+    bestInlierCount = 0;
+    bestF = 0;
     for j = 1:100
         r = randi([1 length(x1)],1,totalPoints);
 
@@ -30,7 +31,7 @@ function [F, bestInliers] = RANSAC( x1, y1, x2, y2 )
             noemer = (p2'* Fp1)^2;
 
             di = noemer/(Fp1(1)^2+ Fp2(2)^2 + Fp1(1)^2+ Fp2(2)^2);
-            threshold = 2.7722e-07;
+            threshold = 1.0e-08;
             if di < threshold
                 inlierCount = inlierCount + 1;
                 inliers = [inliers, i];
@@ -39,9 +40,10 @@ function [F, bestInliers] = RANSAC( x1, y1, x2, y2 )
         if inlierCount > bestInlierCount
            bestInlierCount = inlierCount;
            bestInliers = inliers;
+           bestF = F;
         end
     end
-    total = i
-    bestInlierCount
+    total = i;
+    bestInlierCount;
 end
 
