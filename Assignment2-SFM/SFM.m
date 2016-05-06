@@ -76,7 +76,7 @@ function SFM(mode)
     F
     
     
-    PlotImages(matches, im1, im2, f1, f2, [])
+    %PlotImages(matches, im1, im2, f1, f2, [])
     
     
    
