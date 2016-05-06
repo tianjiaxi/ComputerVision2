@@ -65,10 +65,10 @@ function SFM(mode)
 %     
 %     F = Uf*Dfp*Vf';
     if mode == 1 || mode == 2
-        F = FundamentalMatrix(x1,y1,x2,y2);
+        [F, Epipole] = FundamentalMatrix(x1,y1,x2,y2);
     end
     if mode == 3
-        [F, inliers] = RANSAC(x1, y1, x2, y2);
+        [F, Epipole, inliers] = RANSAC(x1, y1, x2, y2);
     end
     if mode == 2 || mode == 3
         F = denormalizeF(F, T1, T2); 
@@ -76,7 +76,9 @@ function SFM(mode)
     F
     
     
-    PlotImages(matches, im1, im2, f1, f2, inliers)
+    %PlotImages(matches, im1, im2, f1, f2, inliers)
+    
+    PlotEpipolarLines(im1, im2, F, Epipole)
     
 
      
