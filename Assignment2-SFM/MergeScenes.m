@@ -1,4 +1,4 @@
-for i =1:48
+for i =1:1
     frameno  = num2str(i);
     frameno2  = num2str(i+1);
     if size(frameno) == 1
@@ -10,5 +10,5 @@ for i =1:48
       image2 = strcat('frame', '000000',frameno2, '.png');
     end
     
-    SFM(1, image, image2);
+    SFM(2, image, image2);
 end

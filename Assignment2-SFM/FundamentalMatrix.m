@@ -1,4 +1,4 @@
-function [ F, Epipole ] = FundamentalMatrix(x1, y1, x2, y2)
+function F = FundamentalMatrix(x1, y1, x2, y2)
     A = [x1.*x2, x1.*y2, x1, y1.*x2, y1.*y2, y1, x2, y2, ones(size(x1))];
     
     [U,D,V] = svd(A); %performing SVD on A
@@ -15,6 +15,6 @@ function [ F, Epipole ] = FundamentalMatrix(x1, y1, x2, y2)
     Dfp(I,I) = 0; %ensuring the rank is 2    
     
     F = Uf*Dfp*Vf';
-    Epipole = Vf(:, 3);
+    %Epipole = Vf(:, 3);
 end
 

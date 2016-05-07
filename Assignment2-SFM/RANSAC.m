@@ -1,4 +1,4 @@
-function [bestF, Epipole, bestInliers] = RANSAC( x1, y1, x2, y2 )
+function [bestF, bestInliers] = RANSAC( x1, y1, x2, y2 )
     totalPoints = 8;
     RandX1 = zeros(totalPoints,1);
     RandY1 = zeros(totalPoints,1);
@@ -8,7 +8,6 @@ function [bestF, Epipole, bestInliers] = RANSAC( x1, y1, x2, y2 )
     bestInliers = [];
     bestInlierCount = 0;
     bestF = 0;
-    bestEpipole = 0;
     for j = 1:100
         r = randi([1 length(x1)],1,totalPoints);
 
@@ -19,7 +18,7 @@ function [bestF, Epipole, bestInliers] = RANSAC( x1, y1, x2, y2 )
             RandY2(i,1) = y2(r(1,i), 1);
         end
 
-        [F, Epipole] = FundamentalMatrix(RandX1, RandY1, RandX2, RandY2);
+        F = FundamentalMatrix(RandX1, RandY1, RandX2, RandY2);
 
         inliers = [] ;
         inlierCount = 0;
@@ -42,7 +41,6 @@ function [bestF, Epipole, bestInliers] = RANSAC( x1, y1, x2, y2 )
            bestInlierCount = inlierCount;
            bestInliers = inliers;
            bestF = F;
-           bestEpipole = Epipole;
         end
     end
     total = i;
