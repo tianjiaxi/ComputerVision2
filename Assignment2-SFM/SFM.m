@@ -1,9 +1,10 @@
-function SFM(mode, image1, image2)
+function inliers = SFM(mode, image1, image2)
     run('vlfeat-0.9.20/toolbox/vl_setup')
     
     im1 = im2single(imread(fullfile('House', image1))) ;
     im2 = im2single(imread(fullfile('House', image2))) ;
     
+    if f1
     [f1,d1] = vl_sift(im1);
     [f2,d2] = vl_sift(im2);
     
