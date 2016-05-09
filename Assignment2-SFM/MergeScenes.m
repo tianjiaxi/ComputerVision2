@@ -107,19 +107,24 @@ for iterations = 1:numel(contents)-1
     else
     NewPointView = zeros(1,size(PointView, 2));
     InliersMatches2 = zeros(1, size(InliersMatches, 2));
-    for j = 1:length(NewInliersMatches)
-        for k = 1:length(InliersMatches)
+    for j = 1:length(NewInliersMatches(1,:))
+        for k = 1:length(InliersMatches(1,:))
             if NewInliersMatches(1,j) == InliersMatches(end,k)
                 NewPointView(1, k) = 1;
                 InliersMatches2(1,k) = NewInliersMatches(2,j);
                 matchfound = 1;
+                break
             end
         end
         if matchfound == 0
                 
-                emptycolumn = zeros(iterations, 1);
-                InliersMatches = horzcat(InliersMatches, emptycolumn);
-                PointView = horzcat(PointView, emptycolumn);
+                emptycolumnPointView = zeros(iterations, 1);
+                emptycolumnPointView(end, 1) = 1;
+                emptycolumnInliersMatches = zeros(iterations, 1);
+                emptycolumnInliersMatches(end, 1) = NewInliersMatches(1,j);
+                
+                InliersMatches = horzcat(InliersMatches, emptycolumnInliersMatches);
+                PointView = horzcat(PointView, emptycolumnPointView);
                 NewPointView(1, end+1) = 1;
                 InliersMatches2(1, end+1) = NewInliersMatches(2,j);
                 
@@ -133,12 +138,12 @@ for iterations = 1:numel(contents)-1
     InliersMatches = vertcat(InliersMatches, InliersMatches2);
     PointView = vertcat(PointView, NewPointView);
     end
-    PointView
-    InliersMatches
     
-    if iterations == 3
+    
+    if iterations == 5
         break
     end
 end
-
+    PointView
+    InliersMatches
 end

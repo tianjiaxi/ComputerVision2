@@ -31,7 +31,7 @@ function [bestF, bestInliers] = RANSAC( x1, y1, x2, y2 )
             noemer = (p2'* Fp1)^2;
 
             di = noemer/(Fp1(1)^2+ Fp2(2)^2 + Fp1(1)^2+ Fp2(2)^2);
-            threshold = 1.0e-08;
+            threshold = 1.0e-04;
             if di < threshold
                 inlierCount = inlierCount + 1;
                 inliers = [inliers, i];
