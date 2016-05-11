@@ -11,17 +11,17 @@ matchfound = 0;
 for iterations = 1:numel(contents)-1
    
     
-    image1 = contents(iterations).name
-    image2 = contents(iterations+1).name
+    image1 = contents(iterations).name;
+    image2 = contents(iterations+1).name;
     
     im1 = im2single(imread(fullfile('House', image1))) ;
     im2 = im2single(imread(fullfile('House', image2))) ;
     
     if isempty(f1)
         [f1,D1] = vl_sift(im1);
+       
     end
     [f2,D2] = vl_sift(im2);
-    
     [matches, scores] = vl_ubcmatch(D1,D2) ;
     
     xy1 = f1(1:2, matches(1, :))';
@@ -95,55 +95,107 @@ for iterations = 1:numel(contents)-1
     %PlotImages(matches, im1, im2, f1, f2, inliers)
     
     %PlotEpipolarLines(im1, im2, F, Epipole)
-    f1=f2;
-    D1=D2;
+    
+    %look up all the inliers
     for l = 1:length(inliers)
        NewInliersMatches(:,l) = matches(:, inliers(:,l));
     end
-    
+    %first iteration is just filling the whole thing with ones
     if iterations == 1
         PointView  = ones(size(NewInliersMatches));
         InliersMatches = NewInliersMatches;
+        CoordinateX = zeros(size(NewInliersMatches));        
+        CoordinateY = zeros(size(NewInliersMatches));
+        for m = 1:length(CoordinateX(:,1))
+            for n = 1:length(CoordinateY(1,:))
+                if m == 1
+                    CoordinateX(m,n) = D1(1, InliersMatches(m,n));
+                    CoordinateY(m,n) = D1(2,InliersMatches(m,n));
+                else
+                    CoordinateX(m,n)= D2(1, InliersMatches(m,n));
+                    CoordinateY(m,n) = D2(2,InliersMatches(m,n));
+                end
+            end
+        end
     else
+    %create new rows to append for new frame
     NewPointView = zeros(1,size(PointView, 2));
     InliersMatches2 = zeros(1, size(InliersMatches, 2));
+    NewCoordinateX = zeros(1,size(CoordinateX, 2));
+    NewCoordinateY = zeros(1,size(CoordinateY, 2));
+    
     for j = 1:length(NewInliersMatches(1,:))
         for k = 1:length(InliersMatches(1,:))
             if NewInliersMatches(1,j) == InliersMatches(end,k)
+                %append 1 if match was found
                 NewPointView(1, k) = 1;
+                %append indexes if match was found
                 InliersMatches2(1,k) = NewInliersMatches(2,j);
+                
+                %look the index found in newinliersmatches up in D2 and
+                %place the x and y coordinates in the coordinate matrices
+                NewCoordinateX(1,k) = D2(1, NewInliersMatches(2,j));
+                NewCoordinateY(1,k) = D2(2,NewInliersMatches(2,j));
                 matchfound = 1;
                 break
             end
         end
         if matchfound == 0
-                
+                %append new column to already existing pointviewmatrix
                 emptycolumnPointView = zeros(iterations, 1);
+                %sizePV = size(PointView)
                 emptycolumnPointView(end, 1) = 1;
+                PointView = horzcat(PointView, emptycolumnPointView);
+                
+                %append new column to already existing indexmatrix
                 emptycolumnInliersMatches = zeros(iterations, 1);
                 emptycolumnInliersMatches(end, 1) = NewInliersMatches(1,j);
-                
                 InliersMatches = horzcat(InliersMatches, emptycolumnInliersMatches);
-                PointView = horzcat(PointView, emptycolumnPointView);
+                
+                %append columns to index and pointview for new frame
                 NewPointView(1, end+1) = 1;
                 InliersMatches2(1, end+1) = NewInliersMatches(2,j);
                 
+                %append new columns to CoordinateX matrixes 
+                emptycolumnCoordinateX = zeros(iterations, 1);
+                emptycolumnCoordinateX(end, 1) = D1(1, NewInliersMatches(1,j));
+                CoordinateX = horzcat(CoordinateX, emptycolumnCoordinateX);
+                
+                %append new columns to CoordinateY matrixes 
+                emptycolumnCoordinateY = zeros(iterations, 1);
+                emptycolumnCoordinateY(end, 1) = D1(2, NewInliersMatches(1,j));
+                CoordinateY = horzcat(CoordinateY, emptycolumnCoordinateY);
+                
+                NewCoordinateX(1, end+1) = D2(1, InliersMatches2(1,end));
+                NewCoordinateY(1, end+1) = D2(2, InliersMatches2(1,end));
         end  
         matchfound = 0;
     end
-    size(PointView)
-    size(NewPointView)
     
-
     InliersMatches = vertcat(InliersMatches, InliersMatches2);
     PointView = vertcat(PointView, NewPointView);
+    
+    CoordinateX = vertcat(CoordinateX, NewCoordinateX);
+    CoordinateY = vertcat(CoordinateY, NewCoordinateY);
     end
     
+    f1=f2;
+    D1=D2;
     
-    if iterations == 5
-        break
-    end
 end
-    PointView
-    InliersMatches
+minIM  = min(InliersMatches);
+minPV  = min(PointView);
+counterIM = 0;
+counterPV = 0;
+for i = 1: length(minIM)
+    if max(minIM(1,i)) > 0
+        counterIM = counterIM+1;
+    end  
+    if max(minPV(1,i)) > 0
+        counterPV = counterPV+1;
+    end  
+end
+    counterIM
+    counterPV
+    spy(PointView)
 end
