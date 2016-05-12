@@ -1,4 +1,5 @@
 function F = FundamentalMatrix(x1, y1, x2, y2)
+    %finding the fundametal matrix of two frames.
     A = [x1.*x2, x1.*y2, x1, y1.*x2, y1.*y2, y1, x2, y2, ones(size(x1))];
     
     [U,D,V] = svd(A); %performing SVD on A

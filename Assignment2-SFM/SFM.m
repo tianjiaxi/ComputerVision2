@@ -1,4 +1,6 @@
 function inliers = SFM(mode, image1, image2)
+    %This function is used to test the different settings in part 1. The 8
+    %points algorithm without (mode = 1) or with normalization(mode = 2) or ransac+normalization(mode = 3).
     run('vlfeat-0.9.20/toolbox/vl_setup')
     
     im1 = im2single(imread(fullfile('House', image1))) ;

@@ -1,4 +1,7 @@
 function MergeScenes()
+%this function is the main function for part 2 and 3, it finds the inliers
+%in the first half, and then creates the point view matrix. Which will be
+%used in StructureFromMotion().
 run('vlfeat-0.9.20/toolbox/vl_setup')
 mode = 3;
 folder = 'House';
@@ -197,7 +200,7 @@ for i = 1: length(minIM)
 end
     counterIM
     counterPV
-    spy(PointView)
+    %spy(PointView)
     %recombine CoordinateX and CoordinateY to D
     D = reshape([CoordinateX(:) CoordinateY(:)]',2*size(CoordinateX,1), []);
     StructureFromMotion(D);

@@ -1,4 +1,7 @@
 function [ M, S ] = getMS( D )
+%This function will get the Motion and Structure matrices from the D
+%(pointview) matrix.
+
 [U, W, V] = svd(D);
 
 U3 = U(:, 1:3);
