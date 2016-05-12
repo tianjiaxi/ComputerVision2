@@ -4,7 +4,6 @@ function inliers = SFM(mode, image1, image2)
     im1 = im2single(imread(fullfile('House', image1))) ;
     im2 = im2single(imread(fullfile('House', image2))) ;
     
-    if f1
     [f1,d1] = vl_sift(im1);
     [f2,d2] = vl_sift(im2);
     
@@ -78,7 +77,7 @@ function inliers = SFM(mode, image1, image2)
     
     
     %PlotImages(matches, im1, im2, f1, f2, inliers)
-    PlotEpipolarLines(im1, im2, F)
+    draw_epipolar(im1, im2, F)
     
 
      
