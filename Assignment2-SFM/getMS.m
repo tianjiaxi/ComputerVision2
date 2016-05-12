@@ -1,5 +1,4 @@
 function [ M, S ] = getMS( D )
-
 [U, W, V] = svd(D);
 
 U3 = U(:, 1:3);

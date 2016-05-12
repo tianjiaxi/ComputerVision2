@@ -28,7 +28,6 @@ for iterations = 1:numel(contents)-1
     xy2 = f2(1:2, matches(2, :))';
 
     if mode == 2 || mode == 3
-        fprintf('normalizing the data')
         x1 = xy1(:, 1);
         y1 = xy1(:, 2);
         x2 = xy2(:,1);
@@ -88,7 +87,6 @@ for iterations = 1:numel(contents)-1
     if mode == 2 || mode == 3
         F = denormalizeF(F, T1, T2); 
     end
-    F
     
     
     
@@ -97,9 +95,11 @@ for iterations = 1:numel(contents)-1
     %PlotEpipolarLines(im1, im2, F, Epipole)
     
     %look up all the inliers
-    for l = 1:length(inliers)
-       NewInliersMatches(:,l) = matches(:, inliers(:,l));
-    end
+    %for l = 1:length(inliers)
+    %   NewInliersMatches(:,l) = matches(:, inliers(:,l));
+    %end
+    NewInliersMatches = matches(:, inliers);
+    
     %first iteration is just filling the whole thing with ones
     if iterations == 1
         PointView  = ones(size(NewInliersMatches));
@@ -109,11 +109,11 @@ for iterations = 1:numel(contents)-1
         for m = 1:length(CoordinateX(:,1))
             for n = 1:length(CoordinateY(1,:))
                 if m == 1
-                    CoordinateX(m,n) = D1(1, InliersMatches(m,n));
-                    CoordinateY(m,n) = D1(2,InliersMatches(m,n));
+                    CoordinateX(m,n) = f1(1, InliersMatches(m,n));
+                    CoordinateY(m,n) = f1(2, InliersMatches(m,n));
                 else
-                    CoordinateX(m,n)= D2(1, InliersMatches(m,n));
-                    CoordinateY(m,n) = D2(2,InliersMatches(m,n));
+                    CoordinateX(m,n) = f2(1, InliersMatches(m,n));
+                    CoordinateY(m,n) = f2(2, InliersMatches(m,n));
                 end
             end
         end
@@ -134,8 +134,8 @@ for iterations = 1:numel(contents)-1
                 
                 %look the index found in newinliersmatches up in D2 and
                 %place the x and y coordinates in the coordinate matrices
-                NewCoordinateX(1,k) = D2(1, NewInliersMatches(2,j));
-                NewCoordinateY(1,k) = D2(2,NewInliersMatches(2,j));
+                NewCoordinateX(1,k) = f2(1, NewInliersMatches(2,j));
+                NewCoordinateY(1,k) = f2(2, NewInliersMatches(2,j));
                 matchfound = 1;
                 break
             end
@@ -158,16 +158,16 @@ for iterations = 1:numel(contents)-1
                 
                 %append new columns to CoordinateX matrixes 
                 emptycolumnCoordinateX = zeros(iterations, 1);
-                emptycolumnCoordinateX(end, 1) = D1(1, NewInliersMatches(1,j));
+                emptycolumnCoordinateX(end, 1) = f1(1, NewInliersMatches(1,j));
                 CoordinateX = horzcat(CoordinateX, emptycolumnCoordinateX);
                 
                 %append new columns to CoordinateY matrixes 
                 emptycolumnCoordinateY = zeros(iterations, 1);
-                emptycolumnCoordinateY(end, 1) = D1(2, NewInliersMatches(1,j));
+                emptycolumnCoordinateY(end, 1) = f1(2, NewInliersMatches(1,j));
                 CoordinateY = horzcat(CoordinateY, emptycolumnCoordinateY);
                 
-                NewCoordinateX(1, end+1) = D2(1, InliersMatches2(1,end));
-                NewCoordinateY(1, end+1) = D2(2, InliersMatches2(1,end));
+                NewCoordinateX(1, end+1) = f2(1, InliersMatches2(1,end));
+                NewCoordinateY(1, end+1) = f2(2, InliersMatches2(1,end));
         end  
         matchfound = 0;
     end
@@ -198,4 +198,7 @@ end
     counterIM
     counterPV
     spy(PointView)
+    %recombine CoordinateX and CoordinateY to D
+    D = reshape([CoordinateX(:) CoordinateY(:)]',2*size(CoordinateX,1), []);
+    StructureFromMotion(D);
 end
